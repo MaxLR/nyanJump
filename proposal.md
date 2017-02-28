@@ -26,7 +26,8 @@ In addition, this project will include:
 This app will consist of a single screen with game board and nav links to the Github, my LinkedIn,
 and the Controls/About modal.  Game controls will include Start, Stop, and Reset buttons as well as a difficulty selector.  On the right, there will be three (or more) clickable rectangles used to toggle between map schemes (see Bonus Features).
 
-![wireframes](./wireframe.png)
+![main](./main.png)
+![modal](./modal.png)
 
 ### Architecture and Technologies
 
