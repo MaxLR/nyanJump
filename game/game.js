@@ -29,6 +29,10 @@ class Game {
     return platform;
   }
 
+  addStartingPlatforms() {
+    
+  }
+
   addPlayer() {
     const player = new Player({ game: this });
     this.add(player);
