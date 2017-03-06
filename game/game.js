@@ -19,18 +19,26 @@ class Game {
   }
 
   allObjects() {
-    return [].concat(this.player, this.platforms);
+    return [].concat(this.platforms, this.player);
   }
 
-  addPlatform() {
-    const platform = new Platform({ game: this });
+  addPlatform(options) {
+    options.game = this;
+    const platform = new Platform(options);
     this.add(platform);
 
     return platform;
   }
 
+  removeFirstPlatform() {
+    this.platforms = this.platforms.slice(1);
+  }
+
   addStartingPlatforms() {
-    
+    this.addPlatform({pos: [100, 200], size: [200, 15]});
+    this.addPlatform({pos: [400, 300], size: [150, 15]});
+    this.addPlatform({pos: [700, 350], size: [125, 15]});
+    this.addPlatform({pos: [900, 350], size: [100, 15]});
   }
 
   addPlayer() {
@@ -38,10 +46,6 @@ class Game {
     this.add(player);
 
     return player;
-  }
-
-  onPlatform() {
-      this.player.setMaxHeight(this.platforms[0]);
   }
 
   draw(ctx) {
@@ -57,8 +61,19 @@ class Game {
   moveObjects() {
     this.allObjects().forEach((object) => {
       if (object instanceof Player) {
-        this.onPlatform();
-        object.vel[1] = object.vel[1] += 1.5;
+        object.onPlatform = false;
+        object.maxHeight = 600;
+        this.platforms.forEach((platform) => {
+          object.setMaxHeight(platform);
+        });
+        if (object.vel[1] !== 0) {
+          object.vel[1] = object.vel[1] += 1.5;
+        }
+      }
+      if (object instanceof Platform) {
+        if (this.isFirstPlatform(object) && this.isPastBorder(object)) {
+          this.updatePlatforms();
+        }
       }
       object.move();
     });
@@ -66,6 +81,27 @@ class Game {
 
   step() {
     this.moveObjects();
+  }
+
+  isFirstPlatform(object) {
+    if (object.pos[0] === this.platforms[0].pos[0]) {
+      return true;
+    }
+
+    return false;
+  }
+
+  isPastBorder(object) {
+    if (object.pos[0] + object.size[0] <= 0) {
+      return true;
+    }
+
+    return false;
+  }
+
+  updatePlatforms() {
+    this.removeFirstPlatform();
+    this.addPlatform({});
   }
 }
 

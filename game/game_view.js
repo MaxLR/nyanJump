@@ -3,7 +3,7 @@ class GameView {
     this.ctx = ctx;
     this.game = game;
     this.player = this.game.addPlayer();
-    this.platforms = this.game.addPlatform();
+    this.platforms = this.game.addStartingPlatforms();
   }
 
   start() {

@@ -2,13 +2,13 @@ import Platform from './platform';
 
 class Player {
   constructor(game) {
-    const options = {pos: [50,50], vel: [0,0], radius: 25, color: "#FF0000"};
+    const options = {pos: [50,50], vel: [0,1], radius: 25, color: "#FF0000"};
     this.pos = options.pos;
     this.vel = options.vel;
     this.radius = options.radius;
     this.color = options.color;
     this.game = options.game;
-    this.jumps = 2;
+    this.jumps = 3;
     this.maxHeight = 600;
   }
 
@@ -42,15 +42,13 @@ class Player {
       let platformBottom = otherObject.pos[1] + otherObject.size[1];
       if (this.pos[0] > platformRange[0] && this.pos[0] < platformRange[1]) {
         if((this.pos[1] + this.radius >= otherObject.pos[1])
-          && (this.pos[1] + this.radius <= platformBottom)) {
-          this.maxHeight = otherObject.pos[1];
+          && (this.pos[1] + this.radius <= (platformBottom + 25))) {
           this.resetJumps();
+          this.maxHeight = otherObject.pos[1];
           return;
         }
       }
     }
-
-    this.maxHeight = 600;
   }
 
   jump() {
@@ -61,7 +59,7 @@ class Player {
   }
 
   resetJumps() {
-    this.jumps = 2;
+    this.jumps = 3;
   }
 }
 

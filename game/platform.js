@@ -1,11 +1,10 @@
 class Platform {
-  constructor(game) {
-    const options = {pos: [550, 350], vel: [-4, 0], size: [120, 15], color: "#00BFFF"};
-    options.game = game;
+  constructor(options) {
+    options.color = "#00BFFF";
     this.pos = options.pos || this.generatePosition();
+    this.vel = options.vel || [-4, 0];
     this.size = options.size || this.generateSize();
     this.color = options.color;
-    this.vel = options.vel;
     this.game = options.game;
   }
 
@@ -21,12 +20,12 @@ class Platform {
   }
 
   generatePosition() {
-    const yPos = Math.random() * 500;
+    const yPos = (Math.random() * 500) + 50;
     return [1000, yPos];
   }
 
   generateSize() {
-    const length = (Math.random() * 240) + 10;
+    const length = (Math.random() * 240) + 30;
     return [length, 15];
   }
 }
