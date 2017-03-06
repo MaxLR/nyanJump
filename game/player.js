@@ -1,8 +1,10 @@
 import Platform from './platform';
 
+const NORMAL_FRAME_TIME_DELTA = 1000/60;
+
 class Player {
   constructor(game) {
-    const options = {pos: [50,50], vel: [0,1], radius: 25, color: "#FF0000"};
+    const options = {pos: [100,50], vel: [0,1], radius: 25, color: "#FF0000"};
     this.pos = options.pos;
     this.vel = options.vel;
     this.radius = options.radius;
@@ -10,25 +12,24 @@ class Player {
     this.game = options.game;
     this.jumps = 3;
     this.maxHeight = 600;
+    this.spriteCounter = 0;
   }
 
   draw(ctx) {
-    ctx.fillStyle = this.color;
-    ctx.beginPath();
-    ctx.arc(
-      this.pos[0],
-      this.pos[1],
-      this.radius,
-      0,
-      2 * Math.PI
-    );
-
-    ctx.fill();
+    this.spriteCounter = (this.spriteCounter + .25) % 5;
+    const spriteIndex = Math.floor(this.spriteCounter);
+    const imageArray = [[0, 0], [0, 90], [0, 180], [0, 270], [0, 360]];
+    const image = new Image();
+    image.src = "./assets/nyan_sprite.png";
+    ctx.drawImage(image, imageArray[spriteIndex][0],
+      imageArray[spriteIndex][1], 125, 75,
+      this.pos[0] - 25, this.pos[1] - 25, 75, 50);
   }
 
-  move() {
-    this.pos[0] += this.vel[0];
-    this.pos[1] += this.vel[1];
+  move(delta) {
+    const velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
+    this.pos[0] += this.vel[0] * velocityScale;
+    this.pos[1] += this.vel[1] * velocityScale;
 
     if (this.pos[1] + this.radius > this.maxHeight) {
       this.pos[1] = this.maxHeight - this.radius;
@@ -59,7 +60,7 @@ class Player {
   }
 
   resetJumps() {
-    this.jumps = 3;
+    this.jumps = 2;
   }
 }
 

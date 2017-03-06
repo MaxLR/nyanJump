@@ -13,10 +13,20 @@ class GameView {
   }
 
   animate(time) {
-    this.game.step();
+    const timeDelta = time - this.lastTime;
+    this.game.step(timeDelta);
     this.game.draw(this.ctx);
+    this.lastTime = time;
 
     requestAnimationFrame(this.animate.bind(this));
+  }
+
+  reset() {
+    this.game.player = [];
+    this.game.platforms = [];
+    this.player = this.game.addPlayer();
+    this.platforms = this.game.addStartingPlatforms();
+    this.bindKeyHandlers();
   }
 
   bindKeyHandlers() {
@@ -24,6 +34,10 @@ class GameView {
 
     key("space", () => { player.jump(); } );
     key("w", () => { player.resetJumps(); });
+    key("enter", () => { if(this.game.gameOver === true) {
+      this.reset();
+      this.game.gameOver = false;
+    }});
   }
 }
 

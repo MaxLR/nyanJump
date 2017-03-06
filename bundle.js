@@ -81,6 +81,8 @@ var _createClass = function () { function defineProperties(target, props) { for 
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+
 var Platform = function () {
   function Platform(options) {
     _classCallCheck(this, Platform);
@@ -102,9 +104,10 @@ var Platform = function () {
     }
   }, {
     key: "move",
-    value: function move() {
-      this.pos[0] += this.vel[0];
-      this.pos[1] += this.vel[1];
+    value: function move(delta) {
+      var velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
+      this.pos[0] += this.vel[0] * velocityScale;
+      this.pos[1] += this.vel[1] * velocityScale;
     }
   }, {
     key: "generatePosition",
@@ -157,6 +160,9 @@ var Game = function () {
     this.player = null;
     this.platforms = [];
     this.count = 30;
+    this.platformTimer = 0;
+    this.newPlatformTime = 60;
+    this.gameOver = true;
   }
 
   _createClass(Game, [{
@@ -212,38 +218,63 @@ var Game = function () {
       ctx.fillStyle = Game.BG_COLOR;
       ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
 
-      this.allObjects().forEach(function (object) {
-        object.draw(ctx);
-      });
+      if (this.gameOver === true) {
+        this.loadingScreen(ctx);
+      } else {
+        this.allObjects().forEach(function (object) {
+          object.draw(ctx);
+        });
+      }
+    }
+  }, {
+    key: 'loadingScreen',
+    value: function loadingScreen(ctx) {
+      ctx.font = '100px "Indie Flower"';
+      ctx.fillStyle = "#DD443C";
+      ctx.fillText("Nyan Jump", Game.DIM_X / 2 - 250, 180);
+      ctx.font = '65px "Indie Flower"';
+      ctx.fillText("Controls: Press Space to jump", Game.DIM_X / 2 - 450, 300);
+      ctx.fillText("up to 3 times in a row.", Game.DIM_X / 2 - 350, 350);
+      ctx.fillText("Instructions: Keep Nyan Cat off", Game.DIM_X / 2 - 450, 450);
+      ctx.fillText("the ground for as long as you can!", Game.DIM_X / 2 - 475, 500);
     }
   }, {
     key: 'moveObjects',
-    value: function moveObjects() {
+    value: function moveObjects(delta) {
       var _this = this;
 
-      this.allObjects().forEach(function (object) {
+      this.allObjects().forEach(function (object, idx) {
         if (object instanceof _player2.default) {
+          if (object.pos[1] + object.radius >= 600) {
+            _this.gameOver = true;
+          }
           object.onPlatform = false;
           object.maxHeight = 600;
           _this.platforms.forEach(function (platform) {
             object.setMaxHeight(platform);
           });
-          if (object.vel[1] !== 0) {
+          if (object.vel[1] >= -25 && object.vel[1] <= 15) {
             object.vel[1] = object.vel[1] += 1.5;
           }
         }
         if (object instanceof _platform2.default) {
-          if (_this.isFirstPlatform(object) && _this.isPastBorder(object)) {
-            _this.updatePlatforms();
+          if (_this.isPastBorder(object)) {
+            delete _this.platforms[idx];
           }
         }
-        object.move();
+        object.move(delta);
       });
     }
   }, {
     key: 'step',
-    value: function step() {
-      this.moveObjects();
+    value: function step(delta) {
+      this.platformTimer += 1;
+      if (Math.floor(this.platformTimer) >= this.newPlatformTime) {
+        this.addPlatform({});
+        this.setPlatformTimer();
+        this.platformTimer = 0;
+      }
+      this.moveObjects(delta);
     }
   }, {
     key: 'isFirstPlatform',
@@ -264,10 +295,9 @@ var Game = function () {
       return false;
     }
   }, {
-    key: 'updatePlatforms',
-    value: function updatePlatforms() {
-      this.removeFirstPlatform();
-      this.addPlatform({});
+    key: 'setPlatformTimer',
+    value: function setPlatformTimer() {
+      this.newPlatformTime = Math.random() * 60 + 30;
     }
   }]);
 
@@ -315,14 +345,27 @@ var GameView = function () {
   }, {
     key: "animate",
     value: function animate(time) {
-      this.game.step();
+      var timeDelta = time - this.lastTime;
+      this.game.step(timeDelta);
       this.game.draw(this.ctx);
+      this.lastTime = time;
 
       requestAnimationFrame(this.animate.bind(this));
     }
   }, {
+    key: "reset",
+    value: function reset() {
+      this.game.player = [];
+      this.game.platforms = [];
+      this.player = this.game.addPlayer();
+      this.platforms = this.game.addStartingPlatforms();
+      this.bindKeyHandlers();
+    }
+  }, {
     key: "bindKeyHandlers",
     value: function bindKeyHandlers() {
+      var _this = this;
+
       var player = this.player;
 
       key("space", function () {
@@ -330,6 +373,12 @@ var GameView = function () {
       });
       key("w", function () {
         player.resetJumps();
+      });
+      key("enter", function () {
+        if (_this.game.gameOver === true) {
+          _this.reset();
+          _this.game.gameOver = false;
+        }
       });
     }
   }]);
@@ -360,11 +409,13 @@ function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { de
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
+var NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+
 var Player = function () {
   function Player(game) {
     _classCallCheck(this, Player);
 
-    var options = { pos: [50, 50], vel: [0, 1], radius: 25, color: "#FF0000" };
+    var options = { pos: [100, 50], vel: [0, 1], radius: 25, color: "#FF0000" };
     this.pos = options.pos;
     this.vel = options.vel;
     this.radius = options.radius;
@@ -372,22 +423,25 @@ var Player = function () {
     this.game = options.game;
     this.jumps = 3;
     this.maxHeight = 600;
+    this.spriteCounter = 0;
   }
 
   _createClass(Player, [{
     key: "draw",
     value: function draw(ctx) {
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.arc(this.pos[0], this.pos[1], this.radius, 0, 2 * Math.PI);
-
-      ctx.fill();
+      this.spriteCounter = (this.spriteCounter + .25) % 5;
+      var spriteIndex = Math.floor(this.spriteCounter);
+      var imageArray = [[0, 0], [0, 90], [0, 180], [0, 270], [0, 360]];
+      var image = new Image();
+      image.src = "./assets/nyan_sprite.png";
+      ctx.drawImage(image, imageArray[spriteIndex][0], imageArray[spriteIndex][1], 125, 75, this.pos[0] - 25, this.pos[1] - 25, 75, 50);
     }
   }, {
     key: "move",
-    value: function move() {
-      this.pos[0] += this.vel[0];
-      this.pos[1] += this.vel[1];
+    value: function move(delta) {
+      var velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
+      this.pos[0] += this.vel[0] * velocityScale;
+      this.pos[1] += this.vel[1] * velocityScale;
 
       if (this.pos[1] + this.radius > this.maxHeight) {
         this.pos[1] = this.maxHeight - this.radius;
@@ -419,7 +473,7 @@ var Player = function () {
   }, {
     key: "resetJumps",
     value: function resetJumps() {
-      this.jumps = 3;
+      this.jumps = 2;
     }
   }]);
 

@@ -6,6 +6,9 @@ class Game {
     this.player = null;
     this.platforms = [];
     this.count = 30;
+    this.platformTimer = 0;
+    this.newPlatformTime = 60;
+    this.gameOver = true;
   }
 
   add(object) {
@@ -53,34 +56,58 @@ class Game {
     ctx.fillStyle = Game.BG_COLOR;
     ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
 
-    this.allObjects().forEach((object) => {
-      object.draw(ctx);
-    });
+    if (this.gameOver === true) {
+      this.loadingScreen(ctx);
+    } else {
+      this.allObjects().forEach((object) => {
+        object.draw(ctx);
+      });
+    }
   }
 
-  moveObjects() {
-    this.allObjects().forEach((object) => {
+  loadingScreen(ctx) {
+    ctx.font = '100px "Indie Flower"';
+    ctx.fillStyle = "#DD443C";
+    ctx.fillText("Nyan Jump", (Game.DIM_X / 2) - 250, 180);
+    ctx.font = '65px "Indie Flower"';
+    ctx.fillText("Controls: Press Space to jump", (Game.DIM_X / 2) - 450, 300);
+    ctx.fillText("up to 3 times in a row.", (Game.DIM_X / 2) - 350, 350);
+    ctx.fillText("Instructions: Keep Nyan Cat off", (Game.DIM_X / 2) - 450, 450);
+    ctx.fillText("the ground for as long as you can!", (Game.DIM_X / 2) - 475, 500);
+  }
+
+  moveObjects(delta) {
+    this.allObjects().forEach((object, idx) => {
       if (object instanceof Player) {
+        if (object.pos[1] + object.radius >= 600) {
+          this.gameOver = true;
+        }
         object.onPlatform = false;
         object.maxHeight = 600;
         this.platforms.forEach((platform) => {
           object.setMaxHeight(platform);
         });
-        if (object.vel[1] !== 0) {
+        if (object.vel[1] >= -25 && object.vel[1] <= 15) {
           object.vel[1] = object.vel[1] += 1.5;
         }
       }
       if (object instanceof Platform) {
-        if (this.isFirstPlatform(object) && this.isPastBorder(object)) {
-          this.updatePlatforms();
+        if (this.isPastBorder(object)) {
+          delete this.platforms[idx];
         }
       }
-      object.move();
+      object.move(delta);
     });
   }
 
-  step() {
-    this.moveObjects();
+  step(delta) {
+    this.platformTimer += 1;
+    if (Math.floor(this.platformTimer) >= this.newPlatformTime) {
+      this.addPlatform({});
+      this.setPlatformTimer();
+      this.platformTimer = 0;
+    }
+    this.moveObjects(delta);
   }
 
   isFirstPlatform(object) {
@@ -99,9 +126,8 @@ class Game {
     return false;
   }
 
-  updatePlatforms() {
-    this.removeFirstPlatform();
-    this.addPlatform({});
+  setPlatformTimer() {
+    this.newPlatformTime = (Math.random() * 60) + 30;
   }
 }
 
