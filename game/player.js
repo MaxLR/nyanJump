@@ -43,7 +43,7 @@ class Player {
       let platformBottom = otherObject.pos[1] + otherObject.size[1];
       if (this.pos[0] > platformRange[0] && this.pos[0] < platformRange[1]) {
         if((this.pos[1] + this.radius >= otherObject.pos[1])
-          && (this.pos[1] + this.radius <= (platformBottom + 25))) {
+          && (this.pos[1] + this.radius <= (platformBottom + 10))) {
           this.resetJumps();
           this.maxHeight = otherObject.pos[1];
           return;

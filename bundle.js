@@ -163,6 +163,7 @@ var Game = function () {
     this.platformTimer = 0;
     this.newPlatformTime = 60;
     this.gameOver = true;
+    this.score = 0;
   }
 
   _createClass(Game, [{
@@ -224,19 +225,28 @@ var Game = function () {
         this.allObjects().forEach(function (object) {
           object.draw(ctx);
         });
+        this.drawScore(ctx);
       }
+    }
+  }, {
+    key: 'drawScore',
+    value: function drawScore(ctx) {
+      ctx.font = '30px "Indie Flower"';
+      ctx.fillStyle = "#DD443C";
+      ctx.fillText('' + Math.floor(this.score) * 10, 900, 50);
     }
   }, {
     key: 'loadingScreen',
     value: function loadingScreen(ctx) {
       ctx.font = '100px "Indie Flower"';
       ctx.fillStyle = "#DD443C";
-      ctx.fillText("Nyan Jump", Game.DIM_X / 2 - 250, 180);
+      ctx.fillText("Nyan Jump", Game.DIM_X / 2 - 250, 75);
       ctx.font = '65px "Indie Flower"';
-      ctx.fillText("Controls: Press Space to jump", Game.DIM_X / 2 - 450, 300);
-      ctx.fillText("up to 3 times in a row.", Game.DIM_X / 2 - 350, 350);
-      ctx.fillText("Instructions: Keep Nyan Cat off", Game.DIM_X / 2 - 450, 450);
-      ctx.fillText("the ground for as long as you can!", Game.DIM_X / 2 - 475, 500);
+      ctx.fillText("Controls: Press Space to jump", Game.DIM_X / 2 - 450, 175);
+      ctx.fillText("up to 3 times in a row.", Game.DIM_X / 2 - 350, 225);
+      ctx.fillText("Instructions: Keep Nyan Cat off", Game.DIM_X / 2 - 450, 350);
+      ctx.fillText("the ground for as long as you can!", Game.DIM_X / 2 - 475, 400);
+      ctx.fillText("Press Enter to start!", Game.DIM_X / 2 - 300, 550);
     }
   }, {
     key: 'moveObjects',
@@ -269,6 +279,7 @@ var Game = function () {
     key: 'step',
     value: function step(delta) {
       this.platformTimer += 1;
+      this.score += .1;
       if (Math.floor(this.platformTimer) >= this.newPlatformTime) {
         this.addPlatform({});
         this.setPlatformTimer();
@@ -454,7 +465,7 @@ var Player = function () {
         var platformRange = [otherObject.pos[0], otherObject.pos[0] + otherObject.size[0]];
         var platformBottom = otherObject.pos[1] + otherObject.size[1];
         if (this.pos[0] > platformRange[0] && this.pos[0] < platformRange[1]) {
-          if (this.pos[1] + this.radius >= otherObject.pos[1] && this.pos[1] + this.radius <= platformBottom + 25) {
+          if (this.pos[1] + this.radius >= otherObject.pos[1] && this.pos[1] + this.radius <= platformBottom + 10) {
             this.resetJumps();
             this.maxHeight = otherObject.pos[1];
             return;
