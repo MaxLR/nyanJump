@@ -2,11 +2,18 @@ const NORMAL_FRAME_TIME_DELTA = 1000/60;
 
 class Platform {
   constructor(options) {
-    options.color = "#00BFFF";
     this.pos = options.pos || this.generatePosition();
+    switch (this.pos[1] > 350) {
+      case true:
+        options.color = "#ffffff";
+        break;
+      case false:
+        options.color = "#000000";
+        break;
+    }
+    this.color = options.color;
     this.vel = options.vel || [-4, 0];
     this.size = options.size || this.generateSize();
-    this.color = options.color;
     this.game = options.game;
   }
 

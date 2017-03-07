@@ -56,8 +56,7 @@ class Game {
 
   draw(ctx) {
     ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
-    ctx.fillStyle = Game.BG_COLOR;
-    ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
+
 
     if (this.gameOver === true) {
       this.loadingScreen(ctx);
@@ -71,13 +70,13 @@ class Game {
 
   drawScore(ctx) {
     ctx.font = '30px "Indie Flower"';
-    ctx.fillStyle = "#DD443C";
+    ctx.fillStyle = "#000000";
     ctx.fillText(`${Math.floor(this.score) * 10}`, 900, 50);
   }
 
   loadingScreen(ctx) {
     ctx.font = '100px "Indie Flower"';
-    ctx.fillStyle = "#DD443C";
+    ctx.fillStyle = "#000000";
     ctx.fillText("Nyan Jump", (Game.DIM_X / 2) - 250, 75);
     ctx.font = '65px "Indie Flower"';
     ctx.fillText("Controls: Press Space to jump", (Game.DIM_X / 2) - 450, 200);
@@ -151,7 +150,6 @@ class Game {
   }
 }
 
-Game.BG_COLOR = "#000000";
 Game.DIM_X = 1000;
 Game.DIM_Y = 600;
 

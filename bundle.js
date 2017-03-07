@@ -87,11 +87,18 @@ var Platform = function () {
   function Platform(options) {
     _classCallCheck(this, Platform);
 
-    options.color = "#00BFFF";
     this.pos = options.pos || this.generatePosition();
+    switch (this.pos[1] > 350) {
+      case true:
+        options.color = "#ffffff";
+        break;
+      case false:
+        options.color = "#000000";
+        break;
+    }
+    this.color = options.color;
     this.vel = options.vel || [-4, 0];
     this.size = options.size || this.generateSize();
-    this.color = options.color;
     this.game = options.game;
   }
 
@@ -218,8 +225,6 @@ var Game = function () {
     key: 'draw',
     value: function draw(ctx) {
       ctx.clearRect(0, 0, Game.DIM_X, Game.DIM_Y);
-      ctx.fillStyle = Game.BG_COLOR;
-      ctx.fillRect(0, 0, Game.DIM_X, Game.DIM_Y);
 
       if (this.gameOver === true) {
         this.loadingScreen(ctx);
@@ -234,14 +239,14 @@ var Game = function () {
     key: 'drawScore',
     value: function drawScore(ctx) {
       ctx.font = '30px "Indie Flower"';
-      ctx.fillStyle = "#DD443C";
+      ctx.fillStyle = "#000000";
       ctx.fillText('' + Math.floor(this.score) * 10, 900, 50);
     }
   }, {
     key: 'loadingScreen',
     value: function loadingScreen(ctx) {
       ctx.font = '100px "Indie Flower"';
-      ctx.fillStyle = "#DD443C";
+      ctx.fillStyle = "#000000";
       ctx.fillText("Nyan Jump", Game.DIM_X / 2 - 250, 75);
       ctx.font = '65px "Indie Flower"';
       ctx.fillText("Controls: Press Space to jump", Game.DIM_X / 2 - 450, 200);
@@ -327,7 +332,6 @@ var Game = function () {
   return Game;
 }();
 
-Game.BG_COLOR = "#000000";
 Game.DIM_X = 1000;
 Game.DIM_Y = 600;
 
