@@ -22,6 +22,8 @@ class GameView {
   }
 
   reset() {
+    this.game.difficulty = 1;
+    this.game.score = 0;
     this.game.player = [];
     this.game.platforms = [];
     this.player = this.game.addPlayer();

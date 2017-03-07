@@ -10,6 +10,8 @@ class Game {
     this.newPlatformTime = 60;
     this.gameOver = true;
     this.score = 0;
+    this.highScore = 0;
+    this.difficulty = 1;
   }
 
   add(object) {
@@ -78,11 +80,15 @@ class Game {
     ctx.fillStyle = "#DD443C";
     ctx.fillText("Nyan Jump", (Game.DIM_X / 2) - 250, 75);
     ctx.font = '65px "Indie Flower"';
-    ctx.fillText("Controls: Press Space to jump", (Game.DIM_X / 2) - 450, 175);
-    ctx.fillText("up to 3 times in a row.", (Game.DIM_X / 2) - 350, 225);
-    ctx.fillText("Instructions: Keep Nyan Cat off", (Game.DIM_X / 2) - 450, 350);
-    ctx.fillText("the ground for as long as you can!", (Game.DIM_X / 2) - 475, 400);
+    ctx.fillText("Controls: Press Space to jump", (Game.DIM_X / 2) - 450, 200);
+    ctx.fillText("up to 3 times in a row.", (Game.DIM_X / 2) - 350, 250);
+    ctx.fillText("Instructions: Keep Nyan Cat off", (Game.DIM_X / 2) - 450, 375);
+    ctx.fillText("the ground for as long as you can!", (Game.DIM_X / 2) - 475, 425);
     ctx.fillText("Press Enter to start!", (Game.DIM_X / 2) - 300, 550);
+    ctx.font = '30px "Indie Flower"';
+    if (this.highScore > 0) {
+      ctx.fillText(`High Score: ${Math.floor(this.highScore) * 10}`, (Game.DIM_X / 2) + 250, 60);
+    }
   }
 
   moveObjects(delta) {
@@ -90,6 +96,7 @@ class Game {
       if (object instanceof Player) {
         if (object.pos[1] + object.radius >= 600) {
           this.gameOver = true;
+          if (this.score > this.highScore) { this.highScore = this.score; }
         }
         object.onPlatform = false;
         object.maxHeight = 600;
@@ -110,10 +117,13 @@ class Game {
   }
 
   step(delta) {
-    this.platformTimer += 1;
-    this.score += .1;
+    if (!this.gameOver) {
+      this.platformTimer += 1;
+      this.score += .1;
+      this.difficulty += .002;
+    }
     if (Math.floor(this.platformTimer) >= this.newPlatformTime) {
-      this.addPlatform({});
+      this.addPlatform({vel: [-(Math.floor(this.difficulty) + 3), 0]});
       this.setPlatformTimer();
       this.platformTimer = 0;
     }
