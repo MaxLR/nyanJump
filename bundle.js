@@ -82,21 +82,16 @@ var _createClass = function () { function defineProperties(target, props) { for 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 var NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+var BOTTOM_COLORS = ["#FFFFFF", "#E9D758", "#FF8552", "#48ACF0", "#EA7317", "#C81D25"];
+var TOP_COLORS = ["#8A1C7C", "#EA7317", "#FF5A5F", "#F9F936", "#6A0136", "#222222"];
+var MIDDLE_COLORS = ["#73BFB8", "#DA4167", "#20BF55", "#960200", "#FCFF4B", "#F46036"];
 
 var Platform = function () {
   function Platform(options) {
     _classCallCheck(this, Platform);
 
     this.pos = options.pos || this.generatePosition();
-    switch (this.pos[1] > 350) {
-      case true:
-        options.color = "#ffffff";
-        break;
-      case false:
-        options.color = "#000000";
-        break;
-    }
-    this.color = options.color;
+    this.color = this.generateColor();
     this.vel = options.vel || [-4, 0];
     this.size = options.size || this.generateSize();
     this.game = options.game;
@@ -127,6 +122,17 @@ var Platform = function () {
     value: function generateSize() {
       var length = Math.random() * 240 + 30;
       return [length, 15];
+    }
+  }, {
+    key: "generateColor",
+    value: function generateColor() {
+      if (this.pos[1] > 450) {
+        return BOTTOM_COLORS[Math.floor(Math.random() * BOTTOM_COLORS.length)];
+      } else if (this.pos[1] > 250) {
+        return MIDDLE_COLORS[Math.floor(Math.random() * MIDDLE_COLORS.length)];
+      } else {
+        return TOP_COLORS[Math.floor(Math.random() * TOP_COLORS.length)];
+      }
     }
   }]);
 
