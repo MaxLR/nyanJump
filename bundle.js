@@ -488,7 +488,7 @@ var Player = function () {
       if (otherObject instanceof _platform2.default) {
         var platformRange = [otherObject.pos[0], otherObject.pos[0] + otherObject.size[0]];
         var platformBottom = otherObject.pos[1] + otherObject.size[1];
-        if (this.pos[0] > platformRange[0] && this.pos[0] < platformRange[1]) {
+        if (this.pos[0] + 50 > platformRange[0] && this.pos[0] < platformRange[1]) {
           if (this.pos[1] + this.radius >= otherObject.pos[1] && this.pos[1] + this.radius <= platformBottom + 10) {
             this.resetJumps();
             this.maxHeight = otherObject.pos[1];
