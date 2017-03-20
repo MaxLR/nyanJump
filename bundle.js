@@ -63,7 +63,7 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 4);
+/******/ 	return __webpack_require__(__webpack_require__.s = 2);
 /******/ })
 /************************************************************************/
 /******/ ([
@@ -79,88 +79,17 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-
-var NORMAL_FRAME_TIME_DELTA = 1000 / 60;
-var BOTTOM_COLORS = ["#FFFFFF", "#E9D758", "#FF8552", "#48ACF0", "#EA7317", "#C81D25"];
-var TOP_COLORS = ["#8A1C7C", "#EA7317", "#FF5A5F", "#F9F936", "#6A0136", "#222222"];
-var MIDDLE_COLORS = ["#73BFB8", "#DA4167", "#20BF55", "#960200", "#FCFF4B", "#F46036"];
-
-var Platform = function () {
-  function Platform(options) {
-    _classCallCheck(this, Platform);
-
-    this.pos = options.pos || this.generatePosition();
-    this.color = this.generateColor();
-    this.vel = options.vel || [-4, 0];
-    this.size = options.size || this.generateSize();
-    this.game = options.game;
-  }
-
-  _createClass(Platform, [{
-    key: "draw",
-    value: function draw(ctx) {
-      ctx.fillStyle = this.color;
-      ctx.beginPath();
-      ctx.fillRect(this.pos[0], this.pos[1], this.size[0], this.size[1]);
-    }
-  }, {
-    key: "move",
-    value: function move(delta) {
-      var velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
-      this.pos[0] += this.vel[0] * velocityScale;
-      this.pos[1] += this.vel[1] * velocityScale;
-    }
-  }, {
-    key: "generatePosition",
-    value: function generatePosition() {
-      var yPos = Math.random() * 500 + 50;
-      return [1000, yPos];
-    }
-  }, {
-    key: "generateSize",
-    value: function generateSize() {
-      var length = Math.random() * 240 + 30;
-      return [length, 15];
-    }
-  }, {
-    key: "generateColor",
-    value: function generateColor() {
-      if (this.pos[1] > 450) {
-        return BOTTOM_COLORS[Math.floor(Math.random() * BOTTOM_COLORS.length)];
-      } else if (this.pos[1] > 250) {
-        return MIDDLE_COLORS[Math.floor(Math.random() * MIDDLE_COLORS.length)];
-      } else {
-        return TOP_COLORS[Math.floor(Math.random() * TOP_COLORS.length)];
-      }
-    }
-  }]);
-
-  return Platform;
-}();
-
-exports.default = Platform;
-
-/***/ }),
-/* 1 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-
-var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-
-var _player = __webpack_require__(3);
+var _player = __webpack_require__(5);
 
 var _player2 = _interopRequireDefault(_player);
 
-var _platform = __webpack_require__(0);
+var _platform = __webpack_require__(3);
 
 var _platform2 = _interopRequireDefault(_platform);
+
+var _coin = __webpack_require__(4);
+
+var _coin2 = _interopRequireDefault(_coin);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -172,6 +101,7 @@ var Game = function () {
 
     this.player = null;
     this.platforms = [];
+    this.coins = [];
     this.count = 30;
     this.platformTimer = 0;
     this.newPlatformTime = 60;
@@ -188,6 +118,8 @@ var Game = function () {
         this.player = object;
       } else if (object instanceof _platform2.default) {
         this.platforms.push(object);
+      } else if (object instanceof _coin2.default) {
+        this.coins.push(object);
       } else {
         throw 'unknown type of object';
       }
@@ -195,7 +127,7 @@ var Game = function () {
   }, {
     key: 'allObjects',
     value: function allObjects() {
-      return [].concat(this.platforms, this.player);
+      return [].concat(this.platforms, this.coins, this.player);
     }
   }, {
     key: 'addPlatform',
@@ -205,6 +137,15 @@ var Game = function () {
       this.add(platform);
 
       return platform;
+    }
+  }, {
+    key: 'addCoin',
+    value: function addCoin(options) {
+      options.game = this;
+      var coin = new _coin2.default(options);
+      this.add(coin);
+
+      return coin;
     }
   }, {
     key: 'removeFirstPlatform',
@@ -218,6 +159,7 @@ var Game = function () {
       this.addPlatform({ pos: [400, 300], size: [150, 15] });
       this.addPlatform({ pos: [700, 350], size: [125, 15] });
       this.addPlatform({ pos: [900, 350], size: [100, 15] });
+      this.addCoin({ pos: [150, 150], vel: [0, 0] });
     }
   }, {
     key: 'addPlayer',
@@ -344,7 +286,7 @@ Game.DIM_Y = 600;
 exports.default = Game;
 
 /***/ }),
-/* 2 */
+/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
 "use strict";
@@ -424,6 +366,33 @@ var GameView = function () {
 exports.default = GameView;
 
 /***/ }),
+/* 2 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+var _game = __webpack_require__(0);
+
+var _game2 = _interopRequireDefault(_game);
+
+var _game_view = __webpack_require__(1);
+
+var _game_view2 = _interopRequireDefault(_game_view);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+document.addEventListener("DOMContentLoaded", function () {
+  var canvasEl = document.getElementsByTagName("canvas")[0];
+  canvasEl.width = _game2.default.DIM_X;
+  canvasEl.height = _game2.default.DIM_Y;
+
+  var ctx = canvasEl.getContext("2d");
+  var game = new _game2.default();
+  new _game_view2.default(game, ctx).start();
+});
+
+/***/ }),
 /* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
@@ -436,7 +405,133 @@ Object.defineProperty(exports, "__esModule", {
 
 var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 
-var _platform = __webpack_require__(0);
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+var BOTTOM_COLORS = ["#FFFFFF", "#E9D758", "#FF8552", "#48ACF0", "#EA7317", "#C81D25"];
+var TOP_COLORS = ["#8A1C7C", "#EA7317", "#FF5A5F", "#F9F936", "#6A0136", "#222222"];
+var MIDDLE_COLORS = ["#73BFB8", "#DA4167", "#20BF55", "#960200", "#FCFF4B", "#F46036"];
+
+var Platform = function () {
+  function Platform(options) {
+    _classCallCheck(this, Platform);
+
+    this.pos = options.pos || this.generatePosition();
+    this.color = this.generateColor();
+    this.vel = options.vel || [-4, 0];
+    this.size = options.size || this.generateSize();
+    this.game = options.game;
+  }
+
+  _createClass(Platform, [{
+    key: "draw",
+    value: function draw(ctx) {
+      ctx.fillStyle = this.color;
+      ctx.beginPath();
+      ctx.fillRect(this.pos[0], this.pos[1], this.size[0], this.size[1]);
+    }
+  }, {
+    key: "move",
+    value: function move(delta) {
+      var velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
+      this.pos[0] += this.vel[0] * velocityScale;
+      this.pos[1] += this.vel[1] * velocityScale;
+    }
+  }, {
+    key: "generatePosition",
+    value: function generatePosition() {
+      var yPos = Math.random() * 500 + 50;
+      return [1000, yPos];
+    }
+  }, {
+    key: "generateSize",
+    value: function generateSize() {
+      var length = Math.random() * 240 + 30;
+      return [length, 15];
+    }
+  }, {
+    key: "generateColor",
+    value: function generateColor() {
+      if (this.pos[1] > 450) {
+        return BOTTOM_COLORS[Math.floor(Math.random() * BOTTOM_COLORS.length)];
+      } else if (this.pos[1] > 250) {
+        return MIDDLE_COLORS[Math.floor(Math.random() * MIDDLE_COLORS.length)];
+      } else {
+        return TOP_COLORS[Math.floor(Math.random() * TOP_COLORS.length)];
+      }
+    }
+  }]);
+
+  return Platform;
+}();
+
+exports.default = Platform;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+
+var NORMAL_FRAME_TIME_DELTA = 1000 / 60;
+
+var Coin = function () {
+  function Coin(options) {
+    _classCallCheck(this, Coin);
+
+    this.pos = options.pos || this.generatePosition();
+    this.vel = options.vel || [-4, 0];
+    this.game = options.game;
+    this.spriteCounter = 0;
+  }
+
+  _createClass(Coin, [{
+    key: "draw",
+    value: function draw(ctx) {
+      this.spriteCounter = (this.spriteCounter + .2) % 5;
+      var spriteIndex = Math.floor(this.spriteCounter);
+      var imageArray = [[0, 0], [100, 0], [200, 0], [300, 0], [400, 0], [500, 0]];
+      var image = new Image();
+      image.src = "./assets/coin_sprite.png";
+      ctx.drawImage(image, imageArray[spriteIndex][0], imageArray[spriteIndex][1], 100, 100, this.pos[0] - 25, this.pos[1] - 25, 75, 50);
+    }
+  }, {
+    key: "move",
+    value: function move(delta) {
+      var velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
+      this.pos[0] += this.vel[0] * velocityScale;
+      this.pos[1] += this.vel[1] * velocityScale;
+    }
+  }]);
+
+  return Coin;
+}();
+
+exports.default = Coin;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+"use strict";
+
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+
+var _platform = __webpack_require__(3);
 
 var _platform2 = _interopRequireDefault(_platform);
 
@@ -516,33 +611,6 @@ var Player = function () {
 }();
 
 exports.default = Player;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-"use strict";
-
-
-var _game = __webpack_require__(1);
-
-var _game2 = _interopRequireDefault(_game);
-
-var _game_view = __webpack_require__(2);
-
-var _game_view2 = _interopRequireDefault(_game_view);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-document.addEventListener("DOMContentLoaded", function () {
-  var canvasEl = document.getElementsByTagName("canvas")[0];
-  canvasEl.width = _game2.default.DIM_X;
-  canvasEl.height = _game2.default.DIM_Y;
-
-  var ctx = canvasEl.getContext("2d");
-  var game = new _game2.default();
-  new _game_view2.default(game, ctx).start();
-});
 
 /***/ })
 /******/ ]);

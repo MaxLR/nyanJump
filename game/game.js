@@ -29,7 +29,7 @@ class Game {
   }
 
   allObjects() {
-    return [].concat(this.platforms, this.player);
+    return [].concat(this.platforms, this.coins, this.player);
   }
 
   addPlatform(options) {
@@ -38,6 +38,14 @@ class Game {
     this.add(platform);
 
     return platform;
+  }
+
+  addCoin(options) {
+    options.game = this;
+    const coin = new Coin(options);
+    this.add(coin);
+
+    return coin;
   }
 
   removeFirstPlatform() {
@@ -49,6 +57,7 @@ class Game {
     this.addPlatform({pos: [400, 300], size: [150, 15]});
     this.addPlatform({pos: [700, 350], size: [125, 15]});
     this.addPlatform({pos: [900, 350], size: [100, 15]});
+    this.addCoin({pos: [150, 150], vel: [0, 0]});
   }
 
   addPlayer() {

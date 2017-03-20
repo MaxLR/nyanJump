@@ -1,3 +1,5 @@
+const NORMAL_FRAME_TIME_DELTA = 1000/60;
+
 class Coin {
   constructor(options) {
     this.pos = options.pos || this.generatePosition();
@@ -7,14 +9,20 @@ class Coin {
   }
 
   draw(ctx) {
-    this.spriteCounter = (this.spriteCounter + .25) % 5;
+    this.spriteCounter = (this.spriteCounter + .2) % 5;
     const spriteIndex = Math.floor(this.spriteCounter);
-    const imageArray = [[0, 0], [90, 0], [180, 0], [270, 0], [360, 0], [450, 0]];
+    const imageArray = [[0, 0], [100, 0], [200, 0], [300, 0], [400, 0], [500, 0]];
     const image = new Image();
     image.src = "./assets/coin_sprite.png";
     ctx.drawImage(image, imageArray[spriteIndex][0],
-      imageArray[spriteIndex][1], 125, 75,
+      imageArray[spriteIndex][1], 100, 100,
       this.pos[0] - 25, this.pos[1] - 25, 75, 50);
+  }
+
+  move(delta) {
+    const velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
+    this.pos[0] += this.vel[0] * velocityScale;
+    this.pos[1] += this.vel[1] * velocityScale;
   }
 }
 
