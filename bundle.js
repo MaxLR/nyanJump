@@ -602,6 +602,20 @@ var Player = function () {
       }
     }
   }, {
+    key: "checkCoin",
+    value: function checkCoin(coin) {
+      var widthRange = [coin.pos[0], coin.pos[0] = coin.size[0]];
+      var heightRange = [coin.pos[1], coin.pos[1] = coin.size[1]];
+
+      if (this.pos[0] + 35 > widthRange[0] && this.pos[0] < widthRange[1]) {
+        if (this.pos[1] + this.radius >= heightRange[1] && this.pos[1] + this.radius <= heightRange[1] + 10) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+  }, {
     key: "setMaxHeight",
     value: function setMaxHeight(otherObject) {
       if (otherObject instanceof _platform2.default) {

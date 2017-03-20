@@ -36,6 +36,20 @@ class Player {
     }
   }
 
+  checkCoin(coin) {
+    let widthRange = [coin.pos[0], (coin.pos[0] = coin.size[0])];
+    let heightRange = [coin.pos[1], (coin.pos[1] = coin.size[1])];
+
+    if ((this.pos[0] + 35) > widthRange[0] && this.pos[0] < widthRange[1]) {
+      if((this.pos[1] + this.radius >= heightRange[1])
+        && (this.pos[1] + this.radius <= (heightRange[1] + 10))) {
+          return true;
+      }
+    }
+
+    return false;
+  }
+
   setMaxHeight(otherObject) {
     if (otherObject instanceof Platform) {
       let platformRange = [otherObject.pos[0],
