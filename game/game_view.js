@@ -26,6 +26,7 @@ class GameView {
     this.game.score = 0;
     this.game.player = [];
     this.game.platforms = [];
+    this.game.coins = [];
     this.player = this.game.addPlayer();
     this.platforms = this.game.addStartingPlatforms();
     this.bindKeyHandlers();

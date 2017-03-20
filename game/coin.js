@@ -4,6 +4,7 @@ class Coin {
   constructor(options) {
     this.pos = options.pos || this.generatePosition();
     this.vel = options.vel || [-4, 0];
+    this.size = [100, 100];
     this.game = options.game;
     this.spriteCounter = 0;
   }
@@ -23,6 +24,11 @@ class Coin {
     const velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
     this.pos[0] += this.vel[0] * velocityScale;
     this.pos[1] += this.vel[1] * velocityScale;
+  }
+
+  generatePosition() {
+    const yPos = (Math.random() * 500) + 50;
+    return [1000, yPos];
   }
 }
 

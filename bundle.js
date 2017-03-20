@@ -105,6 +105,8 @@ var Game = function () {
     this.count = 30;
     this.platformTimer = 0;
     this.newPlatformTime = 60;
+    this.coinTimer = 0;
+    this.newCoinTime = 60;
     this.gameOver = true;
     this.score = 0;
     this.highScore = 0;
@@ -148,18 +150,12 @@ var Game = function () {
       return coin;
     }
   }, {
-    key: 'removeFirstPlatform',
-    value: function removeFirstPlatform() {
-      this.platforms = this.platforms.slice(1);
-    }
-  }, {
     key: 'addStartingPlatforms',
     value: function addStartingPlatforms() {
       this.addPlatform({ pos: [100, 200], size: [200, 15] });
       this.addPlatform({ pos: [400, 300], size: [150, 15] });
       this.addPlatform({ pos: [700, 350], size: [125, 15] });
       this.addPlatform({ pos: [900, 350], size: [100, 15] });
-      this.addCoin({ pos: [150, 150], vel: [0, 0] });
     }
   }, {
     key: 'addPlayer',
@@ -234,6 +230,12 @@ var Game = function () {
             delete _this.platforms[idx];
           }
         }
+
+        if (object instanceof _coin2.default) {
+          if (_this.isPastBorder(object)) {
+            delete _this.coins[idx - _this.platforms.length];
+          }
+        }
         object.move(delta);
       });
     }
@@ -242,14 +244,23 @@ var Game = function () {
     value: function step(delta) {
       if (!this.gameOver) {
         this.platformTimer += 1;
+        this.coinTimer += 1;
         this.score += .1;
         this.difficulty += .002;
       }
+
+      if (Math.floor(this.coinTimer) >= this.newCoinTime) {
+        this.addCoin({ vel: [-(Math.floor(this.difficulty) + 3), 0] });
+        this.setCoinTimer();
+        this.coinTimer = 0;
+      }
+
       if (Math.floor(this.platformTimer) >= this.newPlatformTime) {
         this.addPlatform({ vel: [-(Math.floor(this.difficulty) + 3), 0] });
         this.setPlatformTimer();
         this.platformTimer = 0;
       }
+
       this.moveObjects(delta);
     }
   }, {
@@ -274,6 +285,11 @@ var Game = function () {
     key: 'setPlatformTimer',
     value: function setPlatformTimer() {
       this.newPlatformTime = Math.random() * 60 + 30;
+    }
+  }, {
+    key: 'setCoinTimer',
+    value: function setCoinTimer() {
+      this.newCoinTime = Math.random() * 60 + 100;
     }
   }]);
 
@@ -334,6 +350,7 @@ var GameView = function () {
       this.game.score = 0;
       this.game.player = [];
       this.game.platforms = [];
+      this.game.coins = [];
       this.player = this.game.addPlayer();
       this.platforms = this.game.addStartingPlatforms();
       this.bindKeyHandlers();
@@ -490,6 +507,7 @@ var Coin = function () {
 
     this.pos = options.pos || this.generatePosition();
     this.vel = options.vel || [-4, 0];
+    this.size = [100, 100];
     this.game = options.game;
     this.spriteCounter = 0;
   }
@@ -510,6 +528,12 @@ var Coin = function () {
       var velocityScale = delta / NORMAL_FRAME_TIME_DELTA;
       this.pos[0] += this.vel[0] * velocityScale;
       this.pos[1] += this.vel[1] * velocityScale;
+    }
+  }, {
+    key: "generatePosition",
+    value: function generatePosition() {
+      var yPos = Math.random() * 500 + 50;
+      return [1000, yPos];
     }
   }]);
 

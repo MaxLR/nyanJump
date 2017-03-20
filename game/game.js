@@ -10,6 +10,8 @@ class Game {
     this.count = 30;
     this.platformTimer = 0;
     this.newPlatformTime = 60;
+    this.coinTimer = 0;
+    this.newCoinTime = 60;
     this.gameOver = true;
     this.score = 0;
     this.highScore = 0;
@@ -48,16 +50,11 @@ class Game {
     return coin;
   }
 
-  removeFirstPlatform() {
-    this.platforms = this.platforms.slice(1);
-  }
-
   addStartingPlatforms() {
     this.addPlatform({pos: [100, 200], size: [200, 15]});
     this.addPlatform({pos: [400, 300], size: [150, 15]});
     this.addPlatform({pos: [700, 350], size: [125, 15]});
     this.addPlatform({pos: [900, 350], size: [100, 15]});
-    this.addCoin({pos: [150, 150], vel: [0, 0]});
   }
 
   addPlayer() {
@@ -124,6 +121,12 @@ class Game {
           delete this.platforms[idx];
         }
       }
+
+      if (object instanceof Coin) {
+        if (this.isPastBorder(object)) {
+          delete this.coins[idx - this.platforms.length];
+        }
+      }
       object.move(delta);
     });
   }
@@ -131,14 +134,23 @@ class Game {
   step(delta) {
     if (!this.gameOver) {
       this.platformTimer += 1;
+      this.coinTimer += 1;
       this.score += .1;
       this.difficulty += .002;
     }
+
+    if (Math.floor(this.coinTimer) >= this.newCoinTime) {
+      this.addCoin({vel: [-(Math.floor(this.difficulty) + 3), 0]});
+      this.setCoinTimer();
+      this.coinTimer = 0;
+    }
+
     if (Math.floor(this.platformTimer) >= this.newPlatformTime) {
       this.addPlatform({vel: [-(Math.floor(this.difficulty) + 3), 0]});
       this.setPlatformTimer();
       this.platformTimer = 0;
     }
+
     this.moveObjects(delta);
   }
 
@@ -160,6 +172,10 @@ class Game {
 
   setPlatformTimer() {
     this.newPlatformTime = (Math.random() * 60) + 30;
+  }
+
+  setCoinTimer() {
+    this.newCoinTime = (Math.random() * 60) + 100;
   }
 }
 
