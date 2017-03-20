@@ -112,6 +112,15 @@ class Game {
         this.platforms.forEach((platform) => {
           object.setMaxHeight(platform);
         });
+        this.coins.forEach((coin, coinIdx) => {
+          if (object.checkCoin(coin) === true) {
+
+            //need to perfect hit detection
+            
+            this.score += 1;
+            delete this.coins[coinIdx];
+          }
+        });
         if (object.vel[1] >= -25 && object.vel[1] <= 15) {
           object.vel[1] = object.vel[1] += 1.5;
         }

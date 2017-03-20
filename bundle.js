@@ -221,6 +221,15 @@ var Game = function () {
           _this.platforms.forEach(function (platform) {
             object.setMaxHeight(platform);
           });
+          _this.coins.forEach(function (coin, coinIdx) {
+            if (object.checkCoin(coin) === true) {
+
+              //need to perfect hit detection
+
+              _this.score += 1;
+              delete _this.coins[coinIdx];
+            }
+          });
           if (object.vel[1] >= -25 && object.vel[1] <= 15) {
             object.vel[1] = object.vel[1] += 1.5;
           }
@@ -604,10 +613,10 @@ var Player = function () {
   }, {
     key: "checkCoin",
     value: function checkCoin(coin) {
-      var widthRange = [coin.pos[0], coin.pos[0] = coin.size[0]];
-      var heightRange = [coin.pos[1], coin.pos[1] = coin.size[1]];
+      var widthRange = [coin.pos[0], coin.pos[0] + coin.size[0]];
+      var heightRange = [coin.pos[1], coin.pos[1] + coin.size[1]];
 
-      if (this.pos[0] + 35 > widthRange[0] && this.pos[0] < widthRange[1]) {
+      if (this.pos[0] + 35 >= widthRange[0] && this.pos[0] <= widthRange[1]) {
         if (this.pos[1] + this.radius >= heightRange[1] && this.pos[1] + this.radius <= heightRange[1] + 10) {
           return true;
         }
