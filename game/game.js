@@ -1,10 +1,12 @@
 import Player from './player';
 import Platform from './platform';
+import Coin from './coin';
 
 class Game {
   constructor() {
     this.player = null;
     this.platforms = [];
+    this.coins = [];
     this.count = 30;
     this.platformTimer = 0;
     this.newPlatformTime = 60;
@@ -19,6 +21,8 @@ class Game {
       this.player = object;
     } else if(object instanceof Platform) {
       this.platforms.push(object);
+    } else if(object instanceof Coin) {
+      this.coins.push(object);
     } else {
       throw 'unknown type of object';
     }
