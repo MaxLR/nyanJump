@@ -114,10 +114,7 @@ class Game {
         });
         this.coins.forEach((coin, coinIdx) => {
           if (object.checkCoin(coin) === true) {
-
-            //need to perfect hit detection
-            
-            this.score += 1;
+            this.score += 10;
             delete this.coins[coinIdx];
           }
         });

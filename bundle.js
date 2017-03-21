@@ -223,10 +223,7 @@ var Game = function () {
           });
           _this.coins.forEach(function (coin, coinIdx) {
             if (object.checkCoin(coin) === true) {
-
-              //need to perfect hit detection
-
-              _this.score += 1;
+              _this.score += 10;
               delete _this.coins[coinIdx];
             }
           });
@@ -516,7 +513,7 @@ var Coin = function () {
 
     this.pos = options.pos || this.generatePosition();
     this.vel = options.vel || [-4, 0];
-    this.size = [100, 100];
+    this.size = [75, 50];
     this.game = options.game;
     this.spriteCounter = 0;
   }
@@ -529,7 +526,7 @@ var Coin = function () {
       var imageArray = [[0, 0], [100, 0], [200, 0], [300, 0], [400, 0], [500, 0]];
       var image = new Image();
       image.src = "./assets/coin_sprite.png";
-      ctx.drawImage(image, imageArray[spriteIndex][0], imageArray[spriteIndex][1], 100, 100, this.pos[0] - 25, this.pos[1] - 25, 75, 50);
+      ctx.drawImage(image, imageArray[spriteIndex][0], imageArray[spriteIndex][1], 100, 100, this.pos[0] - 25, this.pos[1] - 25, 50, 50);
     }
   }, {
     key: "move",
@@ -616,8 +613,8 @@ var Player = function () {
       var widthRange = [coin.pos[0], coin.pos[0] + coin.size[0]];
       var heightRange = [coin.pos[1], coin.pos[1] + coin.size[1]];
 
-      if (this.pos[0] + 35 >= widthRange[0] && this.pos[0] <= widthRange[1]) {
-        if (this.pos[1] + this.radius >= heightRange[1] && this.pos[1] + this.radius <= heightRange[1] + 10) {
+      if (this.pos[0] > widthRange[0] - 25 && this.pos[0] < widthRange[1] + 25) {
+        if (this.pos[1] < heightRange[1] + 25 && this.pos[1] + this.radius > heightRange[0] - 25) {
           return true;
         }
       }

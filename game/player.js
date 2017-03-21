@@ -40,10 +40,10 @@ class Player {
     let widthRange = [coin.pos[0], (coin.pos[0] + coin.size[0])];
     let heightRange = [coin.pos[1], (coin.pos[1] + coin.size[1])];
 
-    if ((this.pos[0] + 35) >= widthRange[0] && this.pos[0] <= widthRange[1]) {
-      if((this.pos[1] + this.radius >= heightRange[1])
-        && (this.pos[1] + this.radius <= (heightRange[1] + 10))) {
-          return true;
+
+    if (this.pos[0] > (widthRange[0] - 25) && this.pos[0] < (widthRange[1] + 25)) {
+      if (this.pos[1] < (heightRange[1] + 25) && this.pos[1] + this.radius > heightRange[0] - 25) {
+        return true;
       }
     }
 

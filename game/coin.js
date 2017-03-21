@@ -4,7 +4,7 @@ class Coin {
   constructor(options) {
     this.pos = options.pos || this.generatePosition();
     this.vel = options.vel || [-4, 0];
-    this.size = [100, 100];
+    this.size = [75, 50];
     this.game = options.game;
     this.spriteCounter = 0;
   }
@@ -17,7 +17,7 @@ class Coin {
     image.src = "./assets/coin_sprite.png";
     ctx.drawImage(image, imageArray[spriteIndex][0],
       imageArray[spriteIndex][1], 100, 100,
-      this.pos[0] - 25, this.pos[1] - 25, 75, 50);
+      this.pos[0] - 25, this.pos[1] - 25, 50, 50);
   }
 
   move(delta) {
