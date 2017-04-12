@@ -1,7 +1,7 @@
 canvas {
   max-width: 1000px;
   max-height: 600px;
-   background-image: url("./assets/level-background.jpg");
+   background-image: url("https://s3.amazonaws.com/nyan-jump/level-background.jpg");
 }
 
 body {
