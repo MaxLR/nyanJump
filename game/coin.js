@@ -14,7 +14,7 @@ class Coin {
     const spriteIndex = Math.floor(this.spriteCounter);
     const imageArray = [[0, 0], [100, 0], [200, 0], [300, 0], [400, 0], [500, 0]];
     const image = new Image();
-    image.src = "./assets/coin_sprite.png";
+    image.src = "https://s3.amazonaws.com/nyan-jump/coin_sprite.png";
     ctx.drawImage(image, imageArray[spriteIndex][0],
       imageArray[spriteIndex][1], 100, 100,
       this.pos[0] - 25, this.pos[1] - 25, 50, 50);

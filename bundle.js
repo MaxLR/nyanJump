@@ -498,7 +498,7 @@ var Coin = function () {
       var spriteIndex = Math.floor(this.spriteCounter);
       var imageArray = [[0, 0], [100, 0], [200, 0], [300, 0], [400, 0], [500, 0]];
       var image = new Image();
-      image.src = "./assets/coin_sprite.png";
+      image.src = "https://s3.amazonaws.com/nyan-jump/coin_sprite.png";
       ctx.drawImage(image, imageArray[spriteIndex][0], imageArray[spriteIndex][1], 100, 100, this.pos[0] - 25, this.pos[1] - 25, 50, 50);
     }
   }, {
@@ -566,7 +566,7 @@ var Player = function () {
       var spriteIndex = Math.floor(this.spriteCounter);
       var imageArray = [[0, 0], [0, 90], [0, 180], [0, 270], [0, 360]];
       var image = new Image();
-      image.src = "./assets/nyan_sprite.png";
+      image.src = "https://s3.amazonaws.com/nyan-jump/nyan_sprite.png";
       ctx.drawImage(image, imageArray[spriteIndex][0], imageArray[spriteIndex][1], 125, 75, this.pos[0] - 25, this.pos[1] - 25, 75, 50);
     }
   }, {
