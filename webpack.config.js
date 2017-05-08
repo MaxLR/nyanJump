@@ -1,7 +1,7 @@
 module.exports = {
   entry: "./game/nyan_jump.js",
   output: {
-    filename: "./bundle.js"
+    filename: "./assets/bundle.js"
 	},
 	devtool: "source-map",
   module: {
